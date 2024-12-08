@@ -15,7 +15,8 @@ class Trail {
     elevation_gain?: number;
     elevation_loss?: number;
     duration?: number;
-    difficulty?: "easy" | "moderate" | "difficult"
+    difficulty?: "easy" | "moderate" | "difficult";
+    difficulty_score?: number;
     lat?: number;
     lon?: number;
     thumbnail: number;
