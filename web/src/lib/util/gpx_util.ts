@@ -61,6 +61,7 @@ export async function gpx2trail(gpxString: string, fallbackName?: string) {
     trail.elevation_gain = totals.elevationGain;
     trail.elevation_loss = totals.elevationLoss;
     trail.distance = totals.distance
+    trail.difficulty_score = totals.difficultyScore;
 
     return { gpx: gpx, trail: trail }
 }

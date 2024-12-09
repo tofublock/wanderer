@@ -77,6 +77,8 @@ export default class GPX {
     let totalElevationLoss = 0;
     let totalDuration = 0;
     let totalDistance = 0;
+    let difficultyScore = 0;
+    let highestElevation = 0;
 
     for (const track of this.trk ?? []) {
       for (const segment of track.trkseg ?? []) {
@@ -111,11 +113,22 @@ export default class GPX {
             point.$.lon ?? 0,
           );
           totalDistance += distance;
+
+          if(point.ele){
+            highestElevation = highestElevation < point.ele ? highestElevation : highestElevation;
+          }
         }
       }
     }
 
-    return { distance: totalDistance, elevationGain: totalElevationGain, elevationLoss: totalElevationLoss, duration: totalDuration }
+    difficultyScore = this.computeDifficultyScore(totalDistance, totalElevationGain, highestElevation);
+
+    return { distance: totalDistance, elevationGain: totalElevationGain, elevationLoss: totalElevationLoss, duration: totalDuration, difficultyScore: difficultyScore }
+  }
+
+  computeDifficultyScore(distance: number, elevationGain: number, highestElevation: number): number{
+    // Formula originally from ClimbByBike; I found it on https://physicalcycling.com/rating-climbing-scenario-difficulty/
+    return (elevationGain/distance*100)*2 + (Math.pow(elevationGain, 2)/distance) + (distance/1000) + (highestElevation > 1000 ? (highestElevation - 1000)/100 : 0);
   }
 
   static parse(gpxString: string): Promise<GPX | Error> {
